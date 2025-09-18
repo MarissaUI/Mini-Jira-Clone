@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Mini Jira Clone</title>
+	<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<header>
+		<div class="brand" aria-label="Mini Jira Clone">
+			<div class="logo" aria-hidden="true"></div>
+			<h1>Mini Jira Clone</h1>
+		</div>
+		<div class="controls">
+			<input id="search" type="search" placeholder="Search title, assignee, priority..." />
+			<select id="filter-priority" aria-label="Filter by priority">
+				<option value="">All Priorities</option>
+				<option value="High">High</option>
+				<option value="Medium">Medium</option>
+				<option value="Low">Low</option>
+			</select>
+			<select id="filter-assignee" aria-label="Filter by assignee">
+				<option value="">All Assignees</option>
+			</select>
+			<button id="new-ticket" class="btn">+ New Ticket</button>
+			<button id="seed" class="btn-ghost" title="Reset with sample data">Seed Demo</button>
+			<button id="clear" class="btn-danger" title="Clear all tickets">Clear</button>
+			<button id="export" class="btn-ghost" title="Export tickets as JSON">Export</button>
+			<label class="import-label" title="Import tickets from JSON">
+				Import <input id="import" type="file" accept="application/json" hidden />
+			</label>
+		</div>
+	</header>
+
+	<main>
+		<div class="board" role="list" aria-label="Kanban Board">
+			<section class="column" data-status="todo" aria-label="To Do">
+				<div class="column-header">
+					<div class="column-title">To Do</div>
+					<div class="count" id="count-todo">0</div>
+				</div>
+				<div class="dropzone" data-status="todo"></div>
+			</section>
+
+			<section class="column" data-status="inprogress" aria-label="In Progress">
+				<div class="column-header">
+					<div class="column-title">In Progress</div>
+					<div class="count" id="count-inprogress">0</div>
+				</div>
+				<div class="dropzone" data-status="inprogress"></div>
+			</section>
+
+			<section class="column" data-status="done" aria-label="Done">
+				<div class="column-header">
+					<div class="column-title">Done</div>
+					<div class="count" id="count-done">0</div>
+				</div>
+				<div class="dropzone" data-status="done"></div>
+			</section>
+		</div>
+	</main>
+
+	<!-- New/Edit Ticket Modal -->
+	<dialog id="ticket-modal">
+		<form method="dialog" id="ticket-form">
+			<div class="modal-header">
+				<strong id="modal-title">Create Ticket</strong>
+				<button id="close-modal" class="btn-ghost" type="button">x</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<label for="title">Title</label>
+					<input id="title" name="title" placeholder="Fix VPN not connecting" required />
+				</div>
+				<div class="row">
+					<label for="description">Description</label>
+					<textarea id="description" name="description" placeholder="Steps to reproduce, expected vs actual behavior"></textarea>
+				</div>
+				<div class="row">
+					<label for="assignee">Assignee</label>
+					<input id="assignee" name="assignee" placeholder="Marissa" />
+				</div>
+				<div class="row">
+					<label for="priority">Priority</label>
+					<select id="priority" name="priority">
+						<option>High</option>
+						<option selected>Medium</option>
+						<option>Low</option>
+					</select>
+				</div>
+				<div class="row">
+					<label for="status">Status</label>
+					<select id="status" name="status">
+						<option value="todo" selected>To Do</option>
+						<option value="inprogress">In Progress</option>
+						<option value="done">Done</option>
+					</select>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn-ghost" value="cancel" type="button" id="cancel">Cancel</button>
+				<button class="btn" value="default" type="submit">Save</button>
+			</div>
+		</form>
+	</dialog>
+
+	<!-- Ticket Details Modal (subtasks, comments, attachments) -->
+  <dialog id="details-modal">
+    <div class="modal-header">
+      <strong>Ticket Details</strong>
+      <button id="close-details" class="btn-ghost" type="button">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <label>Title</label>
+        <div id="d-title" class="detail-text"></div>
+      </div>
+      <div class="row">
+        <label>Description</label>
+        <div id="d-description" class="detail-text"></div>
+      </div>
+      <div class="row">
+        <label>Meta</label>
+        <div id="d-meta" class="detail-text"></div>
+      </div>
+      <hr/>
+      <div class="row">
+        <label>Subtasks</label>
+        <div id="d-subtasks" class="detail-block"></div>
+        <div class="detail-inline">
+          <input id="d-new-subtask" placeholder="New subtask" />
+          <button id="d-add-subtask" class="btn">Add</button>
+        </div>
+      </div>
+      <div class="row">
+        <label>Comments</label>
+        <div id="d-comments" class="detail-block"></div>
+        <div class="detail-inline">
+          <input id="d-new-comment" placeholder="Add a comment" />
+          <button id="d-add-comment" class="btn">Post</button>
+        </div>
+      </div>
+      <div class="row">
+        <label>Attachments</label>
+        <input id="d-file" type="file" />
+        <div id="d-attachments" class="detail-block"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="d-delete" class="btn-danger">Delete Ticket</button>
+      <button id="d-close" class="btn-ghost">Close</button>
+    </div>
+  </dialog>
+
+  <script defer src="app.js"></script>
+</body>
+</html>
